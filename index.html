@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>愛的語言小測驗 💕 母親節活動</title>
+<style>
+  :root {
+    --rose:    #e8b4b8;
+    --peach:   #f2c9c0;
+    --cream:   #fdf6f0;
+    --mauve:   #c9919b;
+    --deep:    #9e5f68;
+    --text:    #5a3a3e;
+    --light:   #fff8f5;
+    --shadow:  rgba(200, 130, 140, 0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Serif TC', 'Georgia', serif;
+    background: linear-gradient(135deg, #fdf0f3 0%, #fef6ee 50%, #fdf0f3 100%);
+    min-height: 100vh;
+    color: var(--text);
+  }
+
+  /* ── Petal background decoration ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(232,180,184,.25) 0 60px, transparent 60px),
+      radial-gradient(circle at 90% 80%, rgba(242,201,192,.30) 0 80px, transparent 80px),
+      radial-gradient(circle at 50% 50%, rgba(232,180,184,.10) 0 200px, transparent 200px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Layout ── */
+  #app {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+  }
+
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeIn .4s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Header flower ── */
+  .flower-header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .flower-header .emoji { font-size: 56px; display: block; margin-bottom: 6px; }
+  .flower-header h1 {
+    font-size: 1.7rem;
+    color: var(--deep);
+    letter-spacing: .04em;
+    line-height: 1.4;
+  }
+  .flower-header p {
+    margin-top: 8px;
+    color: var(--mauve);
+    font-size: .95rem;
+    line-height: 1.6;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: rgba(255,255,255,.88);
+    border-radius: 20px;
+    padding: 28px 24px;
+    box-shadow: 0 4px 24px var(--shadow);
+    margin-bottom: 20px;
+  }
+
+  /* ── Button ── */
+  .btn {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--rose), var(--mauve));
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 36px;
+    font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: .06em;
+    box-shadow: 0 3px 14px rgba(158,95,104,.35);
+    transition: transform .15s, box-shadow .15s;
+    text-decoration: none;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(158,95,104,.45); }
+  .btn:active { transform: translateY(0); }
+  .btn.outline {
+    background: transparent;
+    border: 2px solid var(--mauve);
+    color: var(--mauve);
+    box-shadow: none;
+  }
+  .btn.outline:hover { background: rgba(201,145,155,.1); }
+  .btn-row { text-align: center; margin-top: 16px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  /* ── Input ── */
+  label.field-label { display: block; font-size: .9rem; color: var(--mauve); margin-bottom: 6px; }
+  input[type=text] {
+    width: 100%;
+    border: 1.5px solid #e8c8cc;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--light);
+    outline: none;
+    transition: border-color .2s;
+  }
+  input[type=text]:focus { border-color: var(--mauve); }
+
+  /* ── Progress ── */
+  #progress-wrap {
+    margin-bottom: 20px;
+  }
+  #progress-label {
+    font-size: .85rem;
+    color: var(--mauve);
+    margin-bottom: 6px;
+    text-align: right;
+  }
+  #progress-bar-bg {
+    height: 8px;
+    background: #f0dde0;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  #progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--rose), var(--mauve));
+    border-radius: 99px;
+    transition: width .4s ease;
+  }
+
+  /* ── Question ── */
+  .question-title {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--deep);
+    margin-bottom: 18px;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border: 1.5px solid #edcfd3;
+    border-radius: 14px;
+    padding: 13px 16px;
+    cursor: pointer;
+    background: var(--light);
+    transition: all .2s;
+    font-size: .95rem;
+    line-height: 1.5;
+  }
+  .option:hover { border-color: var(--mauve); background: #fff0f2; }
+  .option.selected { border-color: var(--mauve); background: linear-gradient(135deg,#fff0f2,#fde8ec); box-shadow: 0 0 0 2px rgba(201,145,155,.25); }
+  .option-letter {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: #f0dde0;
+    color: var(--deep);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .8rem;
+    font-weight: bold;
+    transition: background .2s, color .2s;
+  }
+  .option.selected .option-letter { background: var(--mauve); color: #fff; }
+
+  /* ── Nav buttons ── */
+  #nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+  #btn-prev { visibility: hidden; }
+  #btn-prev.show { visibility: visible; }
+
+  /* ── Result ── */
+  .result-badge {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .result-badge .big-emoji { font-size: 72px; display: block; }
+  .result-badge h2 { font-size: 1.6rem; color: var(--deep); margin-top: 8px; }
+  .result-badge .sub { font-size: .95rem; color: var(--mauve); margin-top: 4px; }
+
+  .result-desc {
+    background: linear-gradient(135deg, #fff8f9, #fdf0f3);
+    border-radius: 14px;
+    padding: 18px 20px;
+    font-size: .95rem;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 16px;
+    border: 1px solid #f0dde0;
+  }
+
+  .score-bars { margin-bottom: 16px; }
+  .score-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: .88rem; }
+  .score-row .lang-name { width: 88px; flex-shrink: 0; color: var(--mauve); }
+  .score-row .bar-wrap { flex: 1; height: 10px; background: #f0dde0; border-radius: 99px; overflow: hidden; }
+  .score-row .bar-fill { height: 100%; background: linear-gradient(90deg, var(--rose), var(--mauve)); border-radius: 99px; transition: width 1s ease; }
+  .score-row .score-num { width: 24px; text-align: right; color: var(--deep); font-weight: bold; }
+
+  /* ── Admin ── */
+  .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .admin-header h2 { font-size: 1.2rem; color: var(--deep); }
+  .badge { font-size: .75rem; background: var(--rose); color: var(--deep); border-radius: 99px; padding: 3px 10px; margin-left: 8px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  th {
+    background: linear-gradient(135deg, var(--rose), var(--peach));
+    color: var(--deep);
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: normal;
+    letter-spacing: .03em;
+  }
+  th:first-child { border-radius: 10px 0 0 0; }
+  th:last-child  { border-radius: 0 10px 0 0; }
+  td { padding: 9px 12px; border-bottom: 1px solid #f5e0e3; color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: #fff8f9; }
+  .lang-tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 99px;
+    font-size: .8rem;
+    font-weight: bold;
+  }
+  .tag-W { background: #fde8d0; color: #a06030; }
+  .tag-T { background: #d0f0e8; color: #2e7a60; }
+  .tag-G { background: #f0d8f5; color: #7a3a90; }
+  .tag-S { background: #d8edf5; color: #2a5f8a; }
+  .tag-P { background: #fddce0; color: #a03048; }
+
+  .admin-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .admin-controls input { flex: 1; min-width: 140px; }
+
+  .empty-msg { text-align: center; padding: 40px; color: var(--mauve); font-size: .95rem; }
+
+  /* ── Numpad ── */
+  .npbtn {
+    border: 1.5px solid #edcfd3;
+    border-radius: 14px;
+    background: var(--light);
+    color: var(--text);
+    font-size: 1.3rem;
+    font-family: inherit;
+    padding: 16px 0;
+    cursor: pointer;
+    transition: background .15s, transform .1s;
+  }
+  .npbtn:active { background: #fde8ec; transform: scale(.95); }
+  .pw-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--mauve);
+    background: transparent;
+    transition: background .2s;
+    display: inline-block;
+  }
+  .pw-dot.filled { background: var(--mauve); }
+
+  /* ── Footer tap ── */
+  .secret-tap { cursor: pointer; user-select: none; color: transparent; font-size: 8px; }
+
+  /* ── Toaster ── */
+  #toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--deep); color: #fff;
+    padding: 10px 22px; border-radius: 99px;
+    font-size: .9rem; opacity: 0;
+    transition: all .3s;
+    pointer-events: none;
+    z-index: 999;
+    white-space: nowrap;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ══════════════════ SCREEN: START ══════════════════ -->
+  <div id="screen-start" class="screen active">
+    <div class="flower-header">
+      <span class="emoji">🌸</span>
+      <h1>愛的語言小測驗</h1>
+      <p>每個人表達和接收愛的方式都不同<br>10 道題，找出你的「愛之語」</p>
+    </div>
+
+    <div class="card">
+      <label class="field-label">請輸入你的姓名 / 暱稱</label>
+      <input type="text" id="input-name" placeholder="例：小美媽媽" maxlength="20" />
+
+      <div style="margin-top:18px; font-size:.88rem; color:var(--mauve); line-height:1.8;">
+        測驗將分析你屬於哪種愛之語：<br>
+        💬 <b>肯定的言語</b>・⏰ <b>精心的時刻</b>・🎁 <b>接受禮物</b><br>
+        🤝 <b>服務的行動</b>・🤗 <b>身體的接觸</b>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" onclick="startQuiz()">開始測驗 →</button>
+    </div>
+
+    <p style="text-align:center;margin-top:32px;font-size:.75rem;color:#daa8b0;" id="secret-trigger" onclick="adminTap()">● ● ●</p>
+  </div>
+
+  <!-- ══════════════════ SCREEN: QUIZ ══════════════════ -->
+  <div id="screen-quiz" class="screen">
+    <div class="flower-header">
+      <span class="emoji" style="font-size:36px">🌸</span>
+      <h1 style="font-size:1.2rem">愛的語言小測驗</h1>
+    </div>
+
+    <div id="progress-wrap">
+      <div id="progress-label">第 1 題 / 共 10 題</div>
+      <div id="progress-bar-bg"><div id="progress-bar" style="width:10%"></div></div>
+    </div>
+
+    <div class="card">
+      <div class="question-title" id="q-title"></div>
+      <div class="options" id="q-options"></div>
+    </div>
+
+    <div id="nav-row">
+      <button class="btn outline" id="btn-prev" onclick="prevQ()">← 上一題</button>
+      <button class="btn" id="btn-next" onclick="nextQ()">下一題 →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════ SCREEN: RESULT ══════════════════ -->
+  <div id="screen-result" class="screen">
+    <div class="flower-header">
+      <span class="emoji">🌺</span>
+      <h1>你的測驗結果</h1>
+    </div>
+
+    <div class="card">
+      <div class="result-badge">
+        <span class="big-emoji" id="r-emoji"></span>
+        <h2 id="r-title"></h2>
+        <div class="sub" id="r-sub"></div>
+      </div>
+      <div class="result-desc" id="r-desc"></div>
+
+      <div class="score-bars" id="r-bars"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn outline" onclick="copyResult()">📋 複製結果</button>
+      <button class="btn" onclick="resetQuiz()">再測一次</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════ SCREEN: PASSWORD ══════════════════ -->
+  <div id="screen-password" class="screen">
+    <div class="flower-header">
+      <span class="emoji" style="font-size:40px">🔒</span>
+      <h1 style="font-size:1.2rem">工作人員專區</h1>
+      <p>請輸入後台密碼</p>
+    </div>
+
+    <div class="card" style="max-width:320px;margin:0 auto;">
+      <div id="pw-dots" style="display:flex;justify-content:center;gap:14px;margin-bottom:22px;">
+        <span class="pw-dot"></span><span class="pw-dot"></span>
+        <span class="pw-dot"></span><span class="pw-dot"></span>
+      </div>
+
+      <!-- 數字鍵盤 -->
+      <div id="numpad" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+        <button class="npbtn" onclick="pwInput('1')">1</button>
+        <button class="npbtn" onclick="pwInput('2')">2</button>
+        <button class="npbtn" onclick="pwInput('3')">3</button>
+        <button class="npbtn" onclick="pwInput('4')">4</button>
+        <button class="npbtn" onclick="pwInput('5')">5</button>
+        <button class="npbtn" onclick="pwInput('6')">6</button>
+        <button class="npbtn" onclick="pwInput('7')">7</button>
+        <button class="npbtn" onclick="pwInput('8')">8</button>
+        <button class="npbtn" onclick="pwInput('9')">9</button>
+        <button class="npbtn" onclick="pwClear()" style="font-size:.85rem;color:var(--mauve)">清除</button>
+        <button class="npbtn" onclick="pwInput('0')">0</button>
+        <button class="npbtn" onclick="pwDelete()" style="font-size:1.1rem">⌫</button>
+      </div>
+
+      <div id="pw-error" style="text-align:center;color:#c97080;font-size:.85rem;margin-top:14px;min-height:20px;"></div>
+    </div>
+
+    <div class="btn-row" style="margin-top:16px;">
+      <button class="btn outline" onclick="showScreen('screen-start')">取消</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════ SCREEN: ADMIN ══════════════════ -->
+  <div id="screen-admin" class="screen">
+    <div class="flower-header">
+      <span class="emoji" style="font-size:36px">📊</span>
+      <h1 style="font-size:1.3rem">活動紀錄後台</h1>
+    </div>
+
+    <div class="card">
+      <div class="admin-header">
+        <div>
+          <span style="color:var(--deep);font-weight:bold">測驗記錄</span>
+          <span class="badge" id="admin-count">0 筆</span>
+        </div>
+        <button class="btn outline" style="padding:8px 18px;font-size:.85rem" onclick="showScreen('screen-start')">← 返回</button>
+      </div>
+
+      <div class="admin-controls">
+        <input type="text" id="admin-search" placeholder="搜尋姓名…" oninput="renderTable()" />
+        <button class="btn outline" style="padding:9px 18px;font-size:.85rem" onclick="exportCSV()">匯出 CSV</button>
+        <button class="btn outline" style="padding:9px 18px;font-size:.85rem;border-color:#e8b4b8;color:#c97080" onclick="clearAll()">清空</button>
+      </div>
+
+      <div id="admin-table-wrap"></div>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════
+//  DATA — Questions & Love Language info
+// ══════════════════════════════════
+
+const LANGS = {
+  W: { name: '肯定的言語', emoji: '💬', color: '#fde8d0',
+       desc: '你最渴望透過「言語」感受到愛。真誠的讚美、鼓勵的話語、說出心裡的感謝，對你而言比任何禮物都珍貴。來自家人的一句「你辛苦了」或「我愛你」，就能讓你充滿力量。' },
+  T: { name: '精心的時刻', emoji: '⏰', color: '#d0f0e8',
+       desc: '你最看重「專心陪伴」。不是人在心不在，而是對方放下手機、全神貫注地和你在一起。共同的回憶、一起做的事、眼神交流，都是你感到被愛的來源。' },
+  G: { name: '接受禮物',   emoji: '🎁', color: '#f0d8f5',
+       desc: '對你來說，禮物代表著心意與記憶。不一定要貴重，但那份「我想到了你」的用心讓你深受感動。精心挑選的小禮物、節日的驚喜，都讓你感到無比溫暖。' },
+  S: { name: '服務的行動', emoji: '🤝', color: '#d8edf5',
+       desc: '行動說的比話語更大聲！對你而言，對方願意為你做事、主動分擔、默默付出，就是最有力的愛的表達。幫你做家事、處理難題，都讓你感到被重視和珍愛。' },
+  P: { name: '身體的接觸', emoji: '🤗', color: '#fddce0',
+       desc: '你透過肢體接觸感受到最深刻的愛。一個擁抱、牽手、輕拍肩膀，都讓你感到安全與被愛。這不只是身體上的親近，更是心靈上最直接的連結。' },
+};
+
+const QUESTIONS = [
+  {
+    q: '當你感到最被愛、最被重視時，通常是因為什麼？',
+    opts: [
+      { text: '對方說了讚美、感謝或鼓勵你的話', lang: 'W' },
+      { text: '對方放下其他事情，專心陪在你身邊', lang: 'T' },
+      { text: '對方在特別時刻送了你驚喜或禮物', lang: 'G' },
+      { text: '對方默默幫你把某件事情處理好', lang: 'S' },
+      { text: '對方給了你一個擁抱或溫暖的肢體接觸', lang: 'P' },
+    ]
+  },
+  {
+    q: '哪種行為最能讓你感到窩心？',
+    opts: [
+      { text: '收到一封對方真心寫給你的訊息或手寫卡片', lang: 'W' },
+      { text: '對方特地空出時間，只為了好好陪你', lang: 'T' },
+      { text: '收到一份精心挑選、符合你喜好的小禮物', lang: 'G' },
+      { text: '對方主動幫你解決你一直在煩惱的事', lang: 'S' },
+      { text: '對方走過來輕輕拍你肩膀或牽起你的手', lang: 'P' },
+    ]
+  },
+  {
+    q: '在你低落或特別疲憊的時候，什麼最能安慰你？',
+    opts: [
+      { text: '聽到「你辛苦了」「你真的做得很好」', lang: 'W' },
+      { text: '有人靜靜地坐在你身旁，什麼都不用說', lang: 'T' },
+      { text: '突然收到一份小禮物或你最喜歡的食物', lang: 'G' },
+      { text: '有人幫你把讓你頭痛的事情都處理好', lang: 'S' },
+      { text: '有人給你一個緊緊的擁抱', lang: 'P' },
+    ]
+  },
+  {
+    q: '你覺得一段關係裡最珍貴的是什麼？',
+    opts: [
+      { text: '彼此常常表達感謝、欣賞和真誠的肯定', lang: 'W' },
+      { text: '有高品質的相處時光，專心投入、不被打擾', lang: 'T' },
+      { text: '記得彼此的喜好，偶爾有驚喜和小禮物', lang: 'G' },
+      { text: '願意為對方付出行動，分擔辛勞和壓力', lang: 'S' },
+      { text: '自然的肢體接觸讓彼此感到安心和親近', lang: 'P' },
+    ]
+  },
+  {
+    q: '什麼時刻最讓你有「對方真的在乎我」的感覺？',
+    opts: [
+      { text: '對方在人前稱讚你，或私下給你真誠的肯定', lang: 'W' },
+      { text: '對方把寶貴的時間留給你，專心和你在一起', lang: 'T' },
+      { text: '對方記得你的喜好並用禮物表達心意', lang: 'G' },
+      { text: '對方不需要你開口就主動幫你', lang: 'S' },
+      { text: '對方自然地靠近你、給你溫暖的肢體接觸', lang: 'P' },
+    ]
+  },
+  {
+    q: '如果希望重要的人改變一件事，你最希望是？',
+    opts: [
+      { text: '更常說出感謝和讚美的話', lang: 'W' },
+      { text: '相處時更專心，放下手機真正陪著你', lang: 'T' },
+      { text: '偶爾用小禮物或驚喜表達心意', lang: 'G' },
+      { text: '更主動分擔你的責任和壓力', lang: 'S' },
+      { text: '更多的擁抱和自然的肢體親近', lang: 'P' },
+    ]
+  },
+  {
+    q: '在關係出現摩擦或誤解之後，什麼最能讓你釋懷？',
+    opts: [
+      { text: '對方說出真誠的道歉和讓你感動的話', lang: 'W' },
+      { text: '對方安靜地陪在你身邊，給你空間和時間', lang: 'T' },
+      { text: '對方帶了你喜歡的東西來緩和氣氛', lang: 'G' },
+      { text: '對方主動做了某件讓你輕鬆的事', lang: 'S' },
+      { text: '對方走過來輕輕把你抱住', lang: 'P' },
+    ]
+  },
+  {
+    q: '你最珍視的情感記憶通常是？',
+    opts: [
+      { text: '某人說過讓你久久難忘、感動到想哭的話', lang: 'W' },
+      { text: '和某人共度的某段純粹、美好的相處時光', lang: 'T' },
+      { text: '某個充滿心意的禮物或有意義的小紀念品', lang: 'G' },
+      { text: '某人在你最需要時默默替你解決了難題', lang: 'S' },
+      { text: '和某人相擁或牽手時那種說不清的溫暖感', lang: 'P' },
+    ]
+  },
+  {
+    q: '你覺得「被愛」的感覺最容易從哪裡感受到？',
+    opts: [
+      { text: '對方說的話和給予的肯定', lang: 'W' },
+      { text: '對方願意把時間和專注力留給你', lang: 'T' },
+      { text: '對方送的禮物和安排的驚喜', lang: 'G' },
+      { text: '對方替你做的事和默默的付出', lang: 'S' },
+      { text: '對方的擁抱、牽手等肢體接觸', lang: 'P' },
+    ]
+  },
+  {
+    q: '在最需要支持的時刻，你最希望對方怎麼做？',
+    opts: [
+      { text: '說出「我在你身邊，你不孤單，你做得很好」', lang: 'W' },
+      { text: '放下一切，靜靜陪在你身旁，不需要多說什麼', lang: 'T' },
+      { text: '送來一份代表「我想著你」的禮物或小驚喜', lang: 'G' },
+      { text: '主動幫你解決眼前讓你最頭痛的事', lang: 'S' },
+      { text: '給你一個長長的、緊緊的溫暖擁抱', lang: 'P' },
+    ]
+  },
+];
+
+// ══════════════════════════════════
+//  STATE
+// ══════════════════════════════════
+let userName = '';
+let currentQ = 0;
+let answers  = new Array(QUESTIONS.length).fill(null); // stores lang key
+let adminTapCount = 0;
+let adminTapTimer  = null;
+
+// ══════════════════════════════════
+//  SCREENS
+// ══════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══════════════════════════════════
+//  START
+// ══════════════════════════════════
+function startQuiz() {
+  const raw = document.getElementById('input-name').value.trim();
+  if (!raw) { toast('請先輸入你的姓名或暱稱 😊'); return; }
+  userName = raw;
+  currentQ = 0;
+  answers  = new Array(QUESTIONS.length).fill(null);
+  renderQuestion();
+  showScreen('screen-quiz');
+}
+
+// ══════════════════════════════════
+//  QUIZ RENDER
+// ══════════════════════════════════
+function renderQuestion() {
+  const q   = QUESTIONS[currentQ];
+  const idx = currentQ + 1;
+  const total = QUESTIONS.length;
+
+  document.getElementById('progress-label').textContent = `第 ${idx} 題 / 共 ${total} 題`;
+  document.getElementById('progress-bar').style.width   = `${(idx / total) * 100}%`;
+
+  document.getElementById('q-title').textContent = `Q${idx}. ${q.q}`;
+
+  const letters = ['Ａ','Ｂ','Ｃ','Ｄ','Ｅ'];
+  const wrap = document.getElementById('q-options');
+  wrap.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option' + (answers[currentQ] === opt.lang ? ' selected' : '');
+    div.innerHTML = `<div class="option-letter">${letters[i]}</div><div>${opt.text}</div>`;
+    div.onclick = () => selectOption(opt.lang, div, wrap);
+    wrap.appendChild(div);
+  });
+
+  // prev / next buttons
+  const prev = document.getElementById('btn-prev');
+  const next = document.getElementById('btn-next');
+  prev.classList.toggle('show', currentQ > 0);
+  next.textContent = currentQ === QUESTIONS.length - 1 ? '查看結果 →' : '下一題 →';
+}
+
+function selectOption(lang, el, wrap) {
+  answers[currentQ] = lang;
+  wrap.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function nextQ() {
+  if (answers[currentQ] === null) { toast('請選擇一個選項 😊'); return; }
+  if (currentQ < QUESTIONS.length - 1) {
+    currentQ++;
+    renderQuestion();
+  } else {
+    finishQuiz();
+  }
+}
+
+function prevQ() {
+  if (currentQ > 0) { currentQ--; renderQuestion(); }
+}
+
+// ══════════════════════════════════
+//  FINISH & RESULT
+// ══════════════════════════════════
+function finishQuiz() {
+  const scores = { W:0, T:0, G:0, S:0, P:0 };
+  answers.forEach(a => { if (a) scores[a]++; });
+
+  const topKey = Object.entries(scores).sort((a,b) => b[1]-a[1])[0][0];
+  const lang   = LANGS[topKey];
+
+  document.getElementById('r-emoji').textContent = lang.emoji;
+  document.getElementById('r-title').textContent = lang.name;
+  document.getElementById('r-sub').textContent   = `${userName} 的愛之語`;
+  document.getElementById('r-desc').textContent  = lang.desc;
+
+  // Score bars
+  const barsEl = document.getElementById('r-bars');
+  barsEl.innerHTML = '';
+  const maxScore = Math.max(...Object.values(scores)) || 1;
+  Object.entries(LANGS).forEach(([k, v]) => {
+    const row = document.createElement('div');
+    row.className = 'score-row';
+    const pct = (scores[k] / QUESTIONS.length * 100).toFixed(0);
+    row.innerHTML = `
+      <div class="lang-name">${v.emoji} ${v.name.replace('的','\n的')}</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:0%" data-w="${pct}"></div></div>
+      <div class="score-num">${scores[k]}</div>`;
+    barsEl.appendChild(row);
+  });
+
+  // animate bars after render
+  setTimeout(() => {
+    barsEl.querySelectorAll('.bar-fill').forEach(b => {
+      b.style.width = b.dataset.w + '%';
+    });
+  }, 100);
+
+  showScreen('screen-result');
+
+  // save record (wrapped so a storage error never blocks the result screen)
+  try {
+    saveRecord({ name: userName, lang: topKey, scores, date: new Date().toISOString() });
+  } catch(e) {
+    console.warn('儲存記錄失敗:', e);
+  }
+}
+
+// ══════════════════════════════════
+//  CONFIG — 填入你的 Google Apps Script 網址
+// ══════════════════════════════════
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyqeewHEqjmwK_9DavL_XIz5EmZ9ZO8qnbEoJzh-EoFO1SugKF9zsbfEjErbDkeBJb0Kg/exec';
+
+// ══════════════════════════════════
+//  STORAGE
+// ══════════════════════════════════
+const STORE_KEY = 'love_lang_records_v1';
+
+function loadRecords() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); }
+  catch { return []; }
+}
+
+function saveRecord(rec) {
+  // 1. 本地備份
+  try {
+    const records = loadRecords();
+    records.push(rec);
+    localStorage.setItem(STORE_KEY, JSON.stringify(records));
+  } catch(e) {
+    console.warn('localStorage 失敗:', e);
+  }
+
+  // 2. 送到 Google Sheets（如果有設定網址）
+  if (SHEETS_URL) {
+    fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name:     rec.name,
+        lang:     LANGS[rec.lang].name,
+        emoji:    LANGS[rec.lang].emoji,
+        W: rec.scores.W, T: rec.scores.T, G: rec.scores.G,
+        S: rec.scores.S, P: rec.scores.P,
+        date:     rec.date
+      })
+    }).catch(e => console.warn('Sheets 同步失敗:', e));
+  }
+}
+
+// ══════════════════════════════════
+//  ADMIN PASSWORD
+// ══════════════════════════════════
+const ADMIN_PASSWORD = '1234'; // ← 在這裡修改後台密碼
+let pwBuffer = '';
+
+function adminTap() {
+  adminTapCount++;
+  clearTimeout(adminTapTimer);
+  adminTapTimer = setTimeout(() => adminTapCount = 0, 1500);
+  if (adminTapCount >= 5) {
+    adminTapCount = 0;
+    pwBuffer = '';
+    updateDots();
+    document.getElementById('pw-error').textContent = '';
+    showScreen('screen-password');
+  }
+}
+
+function pwInput(digit) {
+  if (pwBuffer.length >= 4) return;
+  pwBuffer += digit;
+  updateDots();
+  if (pwBuffer.length === 4) {
+    setTimeout(checkPassword, 200);
+  }
+}
+
+function pwDelete() {
+  pwBuffer = pwBuffer.slice(0, -1);
+  updateDots();
+}
+
+function pwClear() {
+  pwBuffer = '';
+  updateDots();
+}
+
+function updateDots() {
+  document.querySelectorAll('.pw-dot').forEach((d, i) => {
+    d.classList.toggle('filled', i < pwBuffer.length);
+  });
+}
+
+function checkPassword() {
+  if (pwBuffer === ADMIN_PASSWORD) {
+    renderTable();
+    showScreen('screen-admin');
+  } else {
+    document.getElementById('pw-error').textContent = '密碼錯誤，請再試一次';
+    pwBuffer = '';
+    updateDots();
+  }
+}
+
+function openAdmin() {
+  renderTable();
+  showScreen('screen-admin');
+}
+
+function renderTable() {
+  const records = loadRecords();
+  const search  = (document.getElementById('admin-search')?.value || '').trim().toLowerCase();
+  const filtered = search ? records.filter(r => r.name.toLowerCase().includes(search)) : records;
+
+  document.getElementById('admin-count').textContent = `${records.length} 筆`;
+
+  const wrap = document.getElementById('admin-table-wrap');
+  if (!filtered.length) {
+    wrap.innerHTML = '<div class="empty-msg">目前還沒有測驗紀錄<br>快讓客人來測試吧 🌸</div>';
+    return;
+  }
+
+  const rows = [...filtered].reverse().map((r, i) => {
+    const d = new Date(r.date);
+    const dateStr = `${d.getMonth()+1}/${d.getDate()} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+    const lang = LANGS[r.lang];
+    return `<tr>
+      <td>${filtered.length - i}</td>
+      <td><b>${esc(r.name)}</b></td>
+      <td><span class="lang-tag tag-${r.lang}">${lang.emoji} ${lang.name}</span></td>
+      <td style="font-size:.8rem;color:#b08898">${dateStr}</td>
+    </tr>`;
+  }).join('');
+
+  wrap.innerHTML = `<table>
+    <thead><tr><th>#</th><th>姓名</th><th>愛之語</th><th>時間</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+function exportCSV() {
+  const records = loadRecords();
+  if (!records.length) { toast('還沒有紀錄'); return; }
+  const header = '姓名,愛之語,時間\n';
+  const rows = [...records].reverse().map(r => {
+    const d = new Date(r.date);
+    return `"${r.name}","${LANGS[r.lang].name}","${d.toLocaleString('zh-TW')}"`;
+  }).join('\n');
+  const blob = new Blob(['\uFEFF' + header + rows], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `愛之語測驗紀錄_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'-')}.csv`;
+  a.click();
+}
+
+function clearAll() {
+  if (!confirm('確定要清空所有紀錄嗎？此動作無法復原。')) return;
+  localStorage.removeItem(STORE_KEY);
+  renderTable();
+  toast('已清空所有紀錄');
+}
+
+// ══════════════════════════════════
+//  UTILITIES
+// ══════════════════════════════════
+function resetQuiz() {
+  document.getElementById('input-name').value = '';
+  showScreen('screen-start');
+}
+
+function copyResult() {
+  const title = document.getElementById('r-title').textContent;
+  const desc  = document.getElementById('r-desc').textContent;
+  const text  = `【愛之語測驗結果】\n${userName} 的愛之語是：${title}\n\n${desc}`;
+  navigator.clipboard.writeText(text).then(() => toast('已複製到剪貼簿 ✓')).catch(() => toast('複製失敗，請手動選取'));
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+function esc(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
