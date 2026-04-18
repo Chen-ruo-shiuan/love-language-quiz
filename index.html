@@ -7,15 +7,15 @@
 <style>
   :root {
     --orange:   #C4622D;
-    --orange-lt:#E07A48;
-    --gray-dk:  #2C2C2C;
-    --gray-md:  #6B6B6B;
-    --gray-lt:  #AEAAA6;
-    --border:   #E0DEDB;
-    --bg:       #F2F1EF;
-    --card:     #FFFFFF;
-    --text:     #2C2C2C;
-    --shadow:   rgba(0,0,0,0.07);
+    --orange-lt:#D9723C;
+    --gray-dk:  #2E2B28;
+    --gray-md:  #6B6560;
+    --gray-lt:  #B0AAA4;
+    --border:   #E3DFD9;
+    --bg:       #F5F2EE;
+    --card:     #FDFBF8;
+    --text:     #2E2B28;
+    --shadow:   rgba(0,0,0,0.06);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,6 +25,23 @@
     background: var(--bg);
     min-height: 100vh;
     color: var(--text);
+    font-weight: 300;
+  }
+
+  /* ── Logo ── */
+  .site-logo {
+    display: block;
+    width: 110px;
+    height: auto;
+    margin: 0 auto 28px;
+    opacity: .88;
+  }
+  .site-logo-sm {
+    display: block;
+    width: 52px;
+    height: auto;
+    margin: 0 auto 18px;
+    opacity: .75;
   }
 
   /* ── Layout ── */
@@ -79,9 +96,9 @@
   /* ── Card ── */
   .card {
     background: var(--card);
-    border-radius: 10px;
+    border-radius: 14px;
     padding: 28px 26px;
-    box-shadow: 0 2px 16px var(--shadow);
+    box-shadow: 0 2px 18px var(--shadow);
     margin-bottom: 20px;
     border: 1px solid var(--border);
   }
@@ -367,6 +384,7 @@
   <!-- ══════════════════ SCREEN: START ══════════════════ -->
   <div id="screen-start" class="screen active">
     <div class="page-header">
+      <img src="logo.png" alt="NiNi の 皮膚療癒所" class="site-logo" />
       <div class="label">Love Language Quiz</div>
       <h1>你的愛之語<br>是什麼？</h1>
       <div class="divider"></div>
@@ -395,6 +413,7 @@
 
   <!-- ══════════════════ SCREEN: QUIZ ══════════════════ -->
   <div id="screen-quiz" class="screen">
+    <img src="logo.png" alt="NiNi の 皮膚療癒所" class="site-logo-sm" />
     <div id="progress-wrap">
       <div id="progress-label">
         <span>愛之語測驗</span>
@@ -417,6 +436,7 @@
   <!-- ══════════════════ SCREEN: RESULT ══════════════════ -->
   <div id="screen-result" class="screen">
     <div class="page-header">
+      <img src="logo.png" alt="NiNi の 皮膚療癒所" class="site-logo-sm" />
       <div class="label">Result</div>
       <h1>測驗結果</h1>
       <div class="divider"></div>
