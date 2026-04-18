@@ -3,281 +3,345 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>愛的語言小測驗 💕 母親節活動</title>
+<title>愛之語測驗</title>
 <style>
   :root {
-    --rose:    #e8b4b8;
-    --peach:   #f2c9c0;
-    --cream:   #fdf6f0;
-    --mauve:   #c9919b;
-    --deep:    #9e5f68;
-    --text:    #5a3a3e;
-    --light:   #fff8f5;
-    --shadow:  rgba(200, 130, 140, 0.18);
+    --orange:   #C4622D;
+    --orange-lt:#E07A48;
+    --gray-dk:  #2C2C2C;
+    --gray-md:  #6B6B6B;
+    --gray-lt:  #AEAAA6;
+    --border:   #E0DEDB;
+    --bg:       #F2F1EF;
+    --card:     #FFFFFF;
+    --text:     #2C2C2C;
+    --shadow:   rgba(0,0,0,0.07);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     font-family: 'Noto Serif TC', 'Georgia', serif;
-    background: linear-gradient(135deg, #fdf0f3 0%, #fef6ee 50%, #fdf0f3 100%);
+    background: var(--bg);
     min-height: 100vh;
     color: var(--text);
   }
 
-  /* ── Petal background decoration ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      radial-gradient(circle at 10% 20%, rgba(232,180,184,.25) 0 60px, transparent 60px),
-      radial-gradient(circle at 90% 80%, rgba(242,201,192,.30) 0 80px, transparent 80px),
-      radial-gradient(circle at 50% 50%, rgba(232,180,184,.10) 0 200px, transparent 200px);
-    pointer-events: none;
-    z-index: 0;
-  }
-
   /* ── Layout ── */
   #app {
-    position: relative;
-    z-index: 1;
-    max-width: 680px;
+    max-width: 640px;
     margin: 0 auto;
-    padding: 24px 16px 48px;
+    padding: 40px 20px 64px;
   }
 
   .screen { display: none; }
-  .screen.active { display: block; animation: fadeIn .4s ease; }
+  .screen.active { display: block; animation: fadeIn .35s ease; }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(16px); }
+    from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── Header flower ── */
-  .flower-header {
-    text-align: center;
-    margin-bottom: 28px;
+  /* ── Page header ── */
+  .page-header {
+    margin-bottom: 36px;
   }
-  .flower-header .emoji { font-size: 56px; display: block; margin-bottom: 6px; }
-  .flower-header h1 {
-    font-size: 1.7rem;
-    color: var(--deep);
-    letter-spacing: .04em;
-    line-height: 1.4;
+  .page-header .label {
+    font-size: .75rem;
+    letter-spacing: .14em;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 10px;
   }
-  .flower-header p {
-    margin-top: 8px;
-    color: var(--mauve);
-    font-size: .95rem;
-    line-height: 1.6;
+  .page-header h1 {
+    font-size: 1.75rem;
+    color: var(--gray-dk);
+    letter-spacing: .03em;
+    line-height: 1.35;
+    font-weight: normal;
   }
+  .page-header p {
+    margin-top: 10px;
+    color: var(--gray-md);
+    font-size: .92rem;
+    line-height: 1.7;
+  }
+  .page-header.centered { text-align: center; }
+
+  /* ── Divider ── */
+  .divider {
+    width: 36px; height: 2px;
+    background: var(--orange);
+    margin: 14px 0 0;
+  }
+  .centered .divider { margin: 14px auto 0; }
 
   /* ── Card ── */
   .card {
-    background: rgba(255,255,255,.88);
-    border-radius: 20px;
-    padding: 28px 24px;
-    box-shadow: 0 4px 24px var(--shadow);
+    background: var(--card);
+    border-radius: 10px;
+    padding: 28px 26px;
+    box-shadow: 0 2px 16px var(--shadow);
     margin-bottom: 20px;
+    border: 1px solid var(--border);
   }
 
   /* ── Button ── */
   .btn {
     display: inline-block;
-    background: linear-gradient(135deg, var(--rose), var(--mauve));
+    background: var(--orange);
     color: #fff;
     border: none;
-    border-radius: 50px;
-    padding: 14px 36px;
-    font-size: 1rem;
+    border-radius: 6px;
+    padding: 13px 32px;
+    font-size: .92rem;
     font-family: inherit;
     cursor: pointer;
-    letter-spacing: .06em;
-    box-shadow: 0 3px 14px rgba(158,95,104,.35);
-    transition: transform .15s, box-shadow .15s;
+    letter-spacing: .08em;
+    transition: background .15s, transform .1s;
     text-decoration: none;
   }
-  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(158,95,104,.45); }
+  .btn:hover { background: var(--orange-lt); transform: translateY(-1px); }
   .btn:active { transform: translateY(0); }
   .btn.outline {
     background: transparent;
-    border: 2px solid var(--mauve);
-    color: var(--mauve);
-    box-shadow: none;
+    border: 1.5px solid var(--gray-lt);
+    color: var(--gray-md);
   }
-  .btn.outline:hover { background: rgba(201,145,155,.1); }
-  .btn-row { text-align: center; margin-top: 16px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn.outline:hover { border-color: var(--orange); color: var(--orange); background: transparent; }
+  .btn-row { margin-top: 20px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
   /* ── Input ── */
-  label.field-label { display: block; font-size: .9rem; color: var(--mauve); margin-bottom: 6px; }
+  label.field-label {
+    display: block;
+    font-size: .8rem;
+    letter-spacing: .08em;
+    color: var(--gray-md);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
   input[type=text] {
     width: 100%;
-    border: 1.5px solid #e8c8cc;
-    border-radius: 12px;
-    padding: 12px 16px;
-    font-size: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: .95rem;
     font-family: inherit;
     color: var(--text);
-    background: var(--light);
+    background: var(--bg);
     outline: none;
     transition: border-color .2s;
   }
-  input[type=text]:focus { border-color: var(--mauve); }
+  input[type=text]:focus { border-color: var(--orange); }
+
+  /* ── Lang list on start screen ── */
+  .lang-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+  }
+  .lang-list-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: .88rem;
+    color: var(--gray-md);
+  }
+  .lang-list-item .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--orange);
+    flex-shrink: 0;
+  }
 
   /* ── Progress ── */
-  #progress-wrap {
-    margin-bottom: 20px;
-  }
+  #progress-wrap { margin-bottom: 24px; }
   #progress-label {
-    font-size: .85rem;
-    color: var(--mauve);
-    margin-bottom: 6px;
-    text-align: right;
+    font-size: .78rem;
+    letter-spacing: .06em;
+    color: var(--gray-lt);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
   }
   #progress-bar-bg {
-    height: 8px;
-    background: #f0dde0;
+    height: 3px;
+    background: var(--border);
     border-radius: 99px;
     overflow: hidden;
   }
   #progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, var(--rose), var(--mauve));
+    background: var(--orange);
     border-radius: 99px;
     transition: width .4s ease;
   }
 
   /* ── Question ── */
   .question-title {
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: var(--deep);
-    margin-bottom: 18px;
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--gray-dk);
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
   }
 
-  .options { display: flex; flex-direction: column; gap: 10px; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
 
   .option {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    border: 1.5px solid #edcfd3;
-    border-radius: 14px;
+    gap: 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
     padding: 13px 16px;
     cursor: pointer;
-    background: var(--light);
-    transition: all .2s;
-    font-size: .95rem;
-    line-height: 1.5;
+    background: var(--card);
+    transition: border-color .18s, background .18s;
+    font-size: .92rem;
+    line-height: 1.55;
+    color: var(--gray-md);
   }
-  .option:hover { border-color: var(--mauve); background: #fff0f2; }
-  .option.selected { border-color: var(--mauve); background: linear-gradient(135deg,#fff0f2,#fde8ec); box-shadow: 0 0 0 2px rgba(201,145,155,.25); }
+  .option:hover { border-color: var(--orange); color: var(--gray-dk); }
+  .option.selected {
+    border-color: var(--orange);
+    background: #FBF3EE;
+    color: var(--gray-dk);
+  }
   .option-letter {
     flex-shrink: 0;
-    width: 28px; height: 28px;
+    width: 24px; height: 24px;
     border-radius: 50%;
-    background: #f0dde0;
-    color: var(--deep);
+    border: 1px solid var(--border);
+    color: var(--gray-lt);
     display: flex; align-items: center; justify-content: center;
-    font-size: .8rem;
-    font-weight: bold;
-    transition: background .2s, color .2s;
+    font-size: .75rem;
+    font-style: normal;
+    transition: border-color .18s, background .18s, color .18s;
   }
-  .option.selected .option-letter { background: var(--mauve); color: #fff; }
+  .option.selected .option-letter {
+    background: var(--orange);
+    border-color: var(--orange);
+    color: #fff;
+  }
 
   /* ── Nav buttons ── */
-  #nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
+  #nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; gap: 10px; }
   #btn-prev { visibility: hidden; }
   #btn-prev.show { visibility: visible; }
 
   /* ── Result ── */
-  .result-badge {
-    text-align: center;
-    margin-bottom: 20px;
+  .result-type-block {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 24px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
   }
-  .result-badge .big-emoji { font-size: 72px; display: block; }
-  .result-badge h2 { font-size: 1.6rem; color: var(--deep); margin-top: 8px; }
-  .result-badge .sub { font-size: .95rem; color: var(--mauve); margin-top: 4px; }
+  .result-icon {
+    width: 64px; height: 64px;
+    border-radius: 10px;
+    background: #FBF3EE;
+    border: 1px solid #EDD5C5;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+  .result-type-block h2 { font-size: 1.4rem; color: var(--gray-dk); font-weight: normal; margin-bottom: 4px; }
+  .result-type-block .sub { font-size: .82rem; color: var(--orange); letter-spacing: .06em; }
 
   .result-desc {
-    background: linear-gradient(135deg, #fff8f9, #fdf0f3);
-    border-radius: 14px;
-    padding: 18px 20px;
-    font-size: .95rem;
-    line-height: 1.8;
-    color: var(--text);
-    margin-bottom: 16px;
-    border: 1px solid #f0dde0;
+    font-size: .93rem;
+    line-height: 1.85;
+    color: var(--gray-md);
+    margin-bottom: 24px;
   }
 
-  .score-bars { margin-bottom: 16px; }
-  .score-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: .88rem; }
-  .score-row .lang-name { width: 88px; flex-shrink: 0; color: var(--mauve); }
-  .score-row .bar-wrap { flex: 1; height: 10px; background: #f0dde0; border-radius: 99px; overflow: hidden; }
-  .score-row .bar-fill { height: 100%; background: linear-gradient(90deg, var(--rose), var(--mauve)); border-radius: 99px; transition: width 1s ease; }
-  .score-row .score-num { width: 24px; text-align: right; color: var(--deep); font-weight: bold; }
+  .score-bars { margin-bottom: 8px; }
+  .score-section-label {
+    font-size: .75rem;
+    letter-spacing: .1em;
+    color: var(--gray-lt);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .score-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; font-size: .83rem; }
+  .score-row .lang-name { width: 80px; flex-shrink: 0; color: var(--gray-md); }
+  .score-row .bar-wrap { flex: 1; height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .score-row .bar-fill { height: 100%; background: var(--orange); border-radius: 99px; transition: width 1s ease; }
+  .score-row .score-num { width: 20px; text-align: right; color: var(--orange); font-weight: bold; font-size: .82rem; }
 
   /* ── Admin ── */
-  .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-  .admin-header h2 { font-size: 1.2rem; color: var(--deep); }
-  .badge { font-size: .75rem; background: var(--rose); color: var(--deep); border-radius: 99px; padding: 3px 10px; margin-left: 8px; }
+  .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .badge {
+    font-size: .72rem;
+    letter-spacing: .06em;
+    background: #FBF3EE;
+    color: var(--orange);
+    border: 1px solid #EDD5C5;
+    border-radius: 4px;
+    padding: 2px 9px;
+    margin-left: 8px;
+  }
 
-  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  table { width: 100%; border-collapse: collapse; font-size: .87rem; }
   th {
-    background: linear-gradient(135deg, var(--rose), var(--peach));
-    color: var(--deep);
+    background: var(--bg);
+    color: var(--gray-md);
     padding: 10px 12px;
     text-align: left;
     font-weight: normal;
-    letter-spacing: .03em;
+    letter-spacing: .06em;
+    font-size: .78rem;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--border);
   }
-  th:first-child { border-radius: 10px 0 0 0; }
-  th:last-child  { border-radius: 0 10px 0 0; }
-  td { padding: 9px 12px; border-bottom: 1px solid #f5e0e3; color: var(--text); }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
   tr:last-child td { border-bottom: none; }
-  tr:nth-child(even) td { background: #fff8f9; }
   .lang-tag {
     display: inline-block;
     padding: 2px 10px;
-    border-radius: 99px;
+    border-radius: 4px;
     font-size: .8rem;
-    font-weight: bold;
+    border: 1px solid var(--border);
+    color: var(--gray-md);
+    background: var(--bg);
   }
-  .tag-W { background: #fde8d0; color: #a06030; }
-  .tag-T { background: #d0f0e8; color: #2e7a60; }
-  .tag-G { background: #f0d8f5; color: #7a3a90; }
-  .tag-S { background: #d8edf5; color: #2a5f8a; }
-  .tag-P { background: #fddce0; color: #a03048; }
+  .tag-W, .tag-T, .tag-G, .tag-S, .tag-P { background: #FBF3EE; border-color: #EDD5C5; color: var(--orange); }
 
-  .admin-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .admin-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
   .admin-controls input { flex: 1; min-width: 140px; }
 
-  .empty-msg { text-align: center; padding: 40px; color: var(--mauve); font-size: .95rem; }
+  .empty-msg { text-align: center; padding: 48px 0; color: var(--gray-lt); font-size: .9rem; letter-spacing: .04em; }
 
   /* ── Numpad ── */
   .npbtn {
-    border: 1.5px solid #edcfd3;
-    border-radius: 14px;
-    background: var(--light);
-    color: var(--text);
-    font-size: 1.3rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--gray-dk);
+    font-size: 1.2rem;
     font-family: inherit;
     padding: 16px 0;
     cursor: pointer;
-    transition: background .15s, transform .1s;
+    transition: background .12s, transform .1s;
   }
-  .npbtn:active { background: #fde8ec; transform: scale(.95); }
+  .npbtn:hover { background: var(--bg); }
+  .npbtn:active { transform: scale(.96); }
   .pw-dot {
-    width: 14px; height: 14px;
+    width: 12px; height: 12px;
     border-radius: 50%;
-    border: 2px solid var(--mauve);
+    border: 1.5px solid var(--gray-lt);
     background: transparent;
-    transition: background .2s;
+    transition: background .2s, border-color .2s;
     display: inline-block;
   }
-  .pw-dot.filled { background: var(--mauve); }
+  .pw-dot.filled { background: var(--orange); border-color: var(--orange); }
 
   /* ── Footer tap ── */
   .secret-tap { cursor: pointer; user-select: none; color: transparent; font-size: 8px; }
@@ -285,13 +349,14 @@
   /* ── Toaster ── */
   #toast {
     position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
-    background: var(--deep); color: #fff;
-    padding: 10px 22px; border-radius: 99px;
-    font-size: .9rem; opacity: 0;
+    background: var(--gray-dk); color: #fff;
+    padding: 10px 22px; border-radius: 6px;
+    font-size: .88rem; opacity: 0;
     transition: all .3s;
     pointer-events: none;
     z-index: 999;
     white-space: nowrap;
+    letter-spacing: .04em;
   }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
@@ -301,39 +366,40 @@
 
   <!-- ══════════════════ SCREEN: START ══════════════════ -->
   <div id="screen-start" class="screen active">
-    <div class="flower-header">
-      <span class="emoji">🌸</span>
-      <h1>愛的語言小測驗</h1>
-      <p>每個人表達和接收愛的方式都不同<br>10 道題，找出你的「愛之語」</p>
+    <div class="page-header">
+      <div class="label">Love Language Quiz</div>
+      <h1>你的愛之語<br>是什麼？</h1>
+      <div class="divider"></div>
+      <p style="margin-top:14px;">每個人表達和接收情感的方式都不同<br>10 道題，找出你在關係中最渴望的連結方式</p>
     </div>
 
     <div class="card">
-      <label class="field-label">請輸入你的姓名 / 暱稱</label>
-      <input type="text" id="input-name" placeholder="例：小美媽媽" maxlength="20" />
+      <label class="field-label">你的名稱</label>
+      <input type="text" id="input-name" placeholder="請輸入姓名或暱稱" maxlength="20" />
 
-      <div style="margin-top:18px; font-size:.88rem; color:var(--mauve); line-height:1.8;">
-        測驗將分析你屬於哪種愛之語：<br>
-        💬 <b>肯定的言語</b>・⏰ <b>精心的時刻</b>・🎁 <b>接受禮物</b><br>
-        🤝 <b>服務的行動</b>・🤗 <b>身體的接觸</b>
+      <div class="lang-list">
+        <div class="lang-list-item"><span class="dot"></span>💬 肯定的言語</div>
+        <div class="lang-list-item"><span class="dot"></span>⏰ 精心的時刻</div>
+        <div class="lang-list-item"><span class="dot"></span>🎁 接受禮物</div>
+        <div class="lang-list-item"><span class="dot"></span>🤝 服務的行動</div>
+        <div class="lang-list-item"><span class="dot"></span>🤗 身體的接觸</div>
       </div>
     </div>
 
-    <div class="btn-row">
+    <div class="btn-row" style="justify-content:flex-start;">
       <button class="btn" onclick="startQuiz()">開始測驗 →</button>
     </div>
 
-    <p style="text-align:center;margin-top:32px;font-size:.75rem;color:#daa8b0;" id="secret-trigger" onclick="adminTap()">● ● ●</p>
+    <p style="text-align:center;margin-top:48px;font-size:.7rem;color:var(--bg);" id="secret-trigger" onclick="adminTap()">● ● ●</p>
   </div>
 
   <!-- ══════════════════ SCREEN: QUIZ ══════════════════ -->
   <div id="screen-quiz" class="screen">
-    <div class="flower-header">
-      <span class="emoji" style="font-size:36px">🌸</span>
-      <h1 style="font-size:1.2rem">愛的語言小測驗</h1>
-    </div>
-
     <div id="progress-wrap">
-      <div id="progress-label">第 1 題 / 共 10 題</div>
+      <div id="progress-label">
+        <span>愛之語測驗</span>
+        <span id="progress-text">1 / 10</span>
+      </div>
       <div id="progress-bar-bg"><div id="progress-bar" style="width:10%"></div></div>
     </div>
 
@@ -350,44 +416,47 @@
 
   <!-- ══════════════════ SCREEN: RESULT ══════════════════ -->
   <div id="screen-result" class="screen">
-    <div class="flower-header">
-      <span class="emoji">🌺</span>
-      <h1>你的測驗結果</h1>
+    <div class="page-header">
+      <div class="label">Result</div>
+      <h1>測驗結果</h1>
+      <div class="divider"></div>
     </div>
 
     <div class="card">
-      <div class="result-badge">
-        <span class="big-emoji" id="r-emoji"></span>
-        <h2 id="r-title"></h2>
-        <div class="sub" id="r-sub"></div>
+      <div class="result-type-block">
+        <div class="result-icon" id="r-emoji"></div>
+        <div>
+          <div class="sub" id="r-sub"></div>
+          <h2 id="r-title"></h2>
+        </div>
       </div>
       <div class="result-desc" id="r-desc"></div>
-
+      <div class="score-section-label">各項分佈</div>
       <div class="score-bars" id="r-bars"></div>
     </div>
 
-    <div class="btn-row">
-      <button class="btn outline" onclick="copyResult()">📋 複製結果</button>
+    <div class="btn-row" style="justify-content:flex-start;">
       <button class="btn" onclick="resetQuiz()">再測一次</button>
+      <button class="btn outline" onclick="copyResult()">複製結果</button>
     </div>
   </div>
 
   <!-- ══════════════════ SCREEN: PASSWORD ══════════════════ -->
   <div id="screen-password" class="screen">
-    <div class="flower-header">
-      <span class="emoji" style="font-size:40px">🔒</span>
-      <h1 style="font-size:1.2rem">工作人員專區</h1>
-      <p>請輸入後台密碼</p>
+    <div class="page-header centered">
+      <div class="label">Staff Only</div>
+      <h1>工作人員專區</h1>
+      <div class="divider"></div>
+      <p style="margin-top:12px;">請輸入後台密碼</p>
     </div>
 
-    <div class="card" style="max-width:320px;margin:0 auto;">
-      <div id="pw-dots" style="display:flex;justify-content:center;gap:14px;margin-bottom:22px;">
+    <div class="card" style="max-width:300px;margin:0 auto;">
+      <div id="pw-dots" style="display:flex;justify-content:center;gap:16px;margin-bottom:24px;">
         <span class="pw-dot"></span><span class="pw-dot"></span>
         <span class="pw-dot"></span><span class="pw-dot"></span>
       </div>
 
-      <!-- 數字鍵盤 -->
-      <div id="numpad" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+      <div id="numpad" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
         <button class="npbtn" onclick="pwInput('1')">1</button>
         <button class="npbtn" onclick="pwInput('2')">2</button>
         <button class="npbtn" onclick="pwInput('3')">3</button>
@@ -397,39 +466,40 @@
         <button class="npbtn" onclick="pwInput('7')">7</button>
         <button class="npbtn" onclick="pwInput('8')">8</button>
         <button class="npbtn" onclick="pwInput('9')">9</button>
-        <button class="npbtn" onclick="pwClear()" style="font-size:.85rem;color:var(--mauve)">清除</button>
+        <button class="npbtn" onclick="pwClear()" style="font-size:.78rem;color:var(--gray-md)">清除</button>
         <button class="npbtn" onclick="pwInput('0')">0</button>
-        <button class="npbtn" onclick="pwDelete()" style="font-size:1.1rem">⌫</button>
+        <button class="npbtn" onclick="pwDelete()">⌫</button>
       </div>
 
-      <div id="pw-error" style="text-align:center;color:#c97080;font-size:.85rem;margin-top:14px;min-height:20px;"></div>
+      <div id="pw-error" style="text-align:center;color:var(--orange);font-size:.82rem;margin-top:14px;min-height:20px;letter-spacing:.04em;"></div>
     </div>
 
-    <div class="btn-row" style="margin-top:16px;">
+    <div class="btn-row" style="margin-top:20px;">
       <button class="btn outline" onclick="showScreen('screen-start')">取消</button>
     </div>
   </div>
 
   <!-- ══════════════════ SCREEN: ADMIN ══════════════════ -->
   <div id="screen-admin" class="screen">
-    <div class="flower-header">
-      <span class="emoji" style="font-size:36px">📊</span>
-      <h1 style="font-size:1.3rem">活動紀錄後台</h1>
+    <div class="page-header">
+      <div class="label">Dashboard</div>
+      <h1>活動紀錄</h1>
+      <div class="divider"></div>
     </div>
 
     <div class="card">
       <div class="admin-header">
-        <div>
-          <span style="color:var(--deep);font-weight:bold">測驗記錄</span>
+        <div style="font-size:.92rem;color:var(--gray-dk);">
+          測驗記錄
           <span class="badge" id="admin-count">0 筆</span>
         </div>
-        <button class="btn outline" style="padding:8px 18px;font-size:.85rem" onclick="showScreen('screen-start')">← 返回</button>
+        <button class="btn outline" style="padding:8px 16px;font-size:.82rem" onclick="showScreen('screen-start')">← 返回</button>
       </div>
 
       <div class="admin-controls">
         <input type="text" id="admin-search" placeholder="搜尋姓名…" oninput="renderTable()" />
-        <button class="btn outline" style="padding:9px 18px;font-size:.85rem" onclick="exportCSV()">匯出 CSV</button>
-        <button class="btn outline" style="padding:9px 18px;font-size:.85rem;border-color:#e8b4b8;color:#c97080" onclick="clearAll()">清空</button>
+        <button class="btn outline" style="padding:9px 16px;font-size:.82rem" onclick="exportCSV()">匯出 CSV</button>
+        <button class="btn outline" style="padding:9px 16px;font-size:.82rem;border-color:#E0DEDB;color:#AEAAA6" onclick="clearAll()">清空</button>
       </div>
 
       <div id="admin-table-wrap"></div>
@@ -600,7 +670,7 @@ function renderQuestion() {
   const idx = currentQ + 1;
   const total = QUESTIONS.length;
 
-  document.getElementById('progress-label').textContent = `第 ${idx} 題 / 共 ${total} 題`;
+  document.getElementById('progress-text').textContent = `${idx} / ${total}`;
   document.getElementById('progress-bar').style.width   = `${(idx / total) * 100}%`;
 
   document.getElementById('q-title').textContent = `Q${idx}. ${q.q}`;
