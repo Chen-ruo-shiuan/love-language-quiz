@@ -31,18 +31,53 @@
   /* ── Logo ── */
   .site-logo {
     display: block;
-    width: 220px;
+    width: 300px;
     height: auto;
-    margin: 0 auto 24px;
-    opacity: .9;
+    margin: 0 auto 20px;
+    opacity: .92;
   }
   .site-logo-sm {
     display: block;
-    width: 110px;
+    width: 170px;
     height: auto;
-    margin: 0 auto 16px;
-    opacity: .75;
+    margin: 0 auto 14px;
+    opacity: .82;
   }
+
+  /* ── Open Question ── */
+  .open-q-intro {
+    font-size: .85rem;
+    color: var(--gray-md);
+    line-height: 1.9;
+    margin-bottom: 20px;
+    letter-spacing: .03em;
+  }
+  .open-q-intro strong {
+    display: block;
+    font-size: 1.05rem;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  textarea#open-answer {
+    width: 100%;
+    min-height: 130px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: .95rem;
+    font-family: inherit;
+    font-weight: 300;
+    color: var(--text);
+    background: var(--bg);
+    resize: vertical;
+    outline: none;
+    line-height: 1.8;
+    transition: border-color .2s;
+  }
+  textarea#open-answer:focus { border-color: var(--orange); }
+  textarea#open-answer::placeholder { color: var(--gray-lt); }
 
   /* ── Layout ── */
   #app {
@@ -433,6 +468,33 @@
     </div>
   </div>
 
+  <!-- ══════════════════ SCREEN: OPEN QUESTION ══════════════════ -->
+  <div id="screen-open" class="screen">
+    <img src="logo.png" alt="NiNi の 皮膚療癒所" class="site-logo-sm" />
+
+    <div class="card">
+      <div class="open-q-intro">
+        <strong>最後一個問題，也是最重要的一個 ✦</strong>
+        在關係裡，我們有時會有一種說不太清楚的感受——
+        明明很在乎，卻覺得哪裡不對勁；
+        明明什麼都好，卻開始有點疲憊或失落。<br><br>
+        <strong style="font-size:.95rem;color:var(--orange);display:block;margin-top:4px;">此刻，你的心裡是否也有這樣一份還沒說出口的感受？</strong>
+        不需要完整，不需要邏輯，<br>就像說給一個真正懂你的朋友聽。
+      </div>
+
+      <textarea id="open-answer" placeholder="例：我很願意為對方付出，但有時候感覺自己的努力被當作理所當然，漸漸地不知道這樣做還有沒有意義……"></textarea>
+
+      <div style="margin-top:10px;font-size:.78rem;color:var(--gray-lt);letter-spacing:.03em;">
+        ✦ 你的回答只會由我們的團隊閱讀，幫助我們更了解你的狀態
+      </div>
+    </div>
+
+    <div id="nav-row-open" style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+      <button class="btn outline" onclick="backToQuiz()">← 上一題</button>
+      <button class="btn" onclick="submitOpen()">查看結果 →</button>
+    </div>
+  </div>
+
   <!-- ══════════════════ SCREEN: RESULT ══════════════════ -->
   <div id="screen-result" class="screen">
     <div class="page-header">
@@ -654,9 +716,10 @@ const QUESTIONS = [
 // ══════════════════════════════════
 //  STATE
 // ══════════════════════════════════
-let userName = '';
-let currentQ = 0;
-let answers  = new Array(QUESTIONS.length).fill(null); // stores lang key
+let userName    = '';
+let currentQ    = 0;
+let answers     = new Array(QUESTIONS.length).fill(null);
+let openAnswer  = '';
 let adminTapCount = 0;
 let adminTapTimer  = null;
 
@@ -725,8 +788,18 @@ function nextQ() {
     currentQ++;
     renderQuestion();
   } else {
-    finishQuiz();
+    // 10 題答完 → 跳簡答頁
+    showScreen('screen-open');
   }
+}
+
+function backToQuiz() {
+  showScreen('screen-quiz');
+}
+
+function submitOpen() {
+  openAnswer = document.getElementById('open-answer').value.trim();
+  finishQuiz();
 }
 
 function prevQ() {
@@ -772,9 +845,9 @@ function finishQuiz() {
 
   showScreen('screen-result');
 
-  // save record (wrapped so a storage error never blocks the result screen)
+  // save record
   try {
-    saveRecord({ name: userName, lang: topKey, scores, date: new Date().toISOString() });
+    saveRecord({ name: userName, lang: topKey, scores, note: openAnswer, date: new Date().toISOString() });
   } catch(e) {
     console.warn('儲存記錄失敗:', e);
   }
@@ -813,6 +886,7 @@ function saveRecord(rec) {
       emoji: LANGS[rec.lang].emoji,
       W: rec.scores.W, T: rec.scores.T, G: rec.scores.G,
       S: rec.scores.S, P: rec.scores.P,
+      note:  rec.note || '',
       date:  rec.date
     });
     fetch(`${SHEETS_URL}?${params}`, { mode: 'no-cors' })
@@ -897,16 +971,19 @@ function renderTable() {
     const d = new Date(r.date);
     const dateStr = `${d.getMonth()+1}/${d.getDate()} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
     const lang = LANGS[r.lang];
+    const noteHtml = r.note
+      ? `<div style="font-size:.78rem;color:var(--gray-md);margin-top:4px;line-height:1.6;white-space:pre-wrap;">${esc(r.note)}</div>`
+      : `<div style="font-size:.78rem;color:var(--gray-lt);margin-top:4px;">（未填寫）</div>`;
     return `<tr>
-      <td>${filtered.length - i}</td>
-      <td><b>${esc(r.name)}</b></td>
-      <td><span class="lang-tag tag-${r.lang}">${lang.emoji} ${lang.name}</span></td>
-      <td style="font-size:.8rem;color:#b08898">${dateStr}</td>
+      <td style="vertical-align:top">${filtered.length - i}</td>
+      <td style="vertical-align:top"><b>${esc(r.name)}</b><br><span style="font-size:.75rem;color:var(--gray-lt)">${dateStr}</span></td>
+      <td style="vertical-align:top"><span class="lang-tag tag-${r.lang}">${lang.emoji} ${lang.name}</span></td>
+      <td style="vertical-align:top">${noteHtml}</td>
     </tr>`;
   }).join('');
 
   wrap.innerHTML = `<table>
-    <thead><tr><th>#</th><th>姓名</th><th>愛之語</th><th>時間</th></tr></thead>
+    <thead><tr><th>#</th><th>姓名</th><th>愛之語</th><th>內心的話</th></tr></thead>
     <tbody>${rows}</tbody>
   </table>`;
 }
@@ -914,10 +991,11 @@ function renderTable() {
 function exportCSV() {
   const records = loadRecords();
   if (!records.length) { toast('還沒有紀錄'); return; }
-  const header = '姓名,愛之語,時間\n';
+  const header = '姓名,愛之語,內心的話,時間\n';
   const rows = [...records].reverse().map(r => {
     const d = new Date(r.date);
-    return `"${r.name}","${LANGS[r.lang].name}","${d.toLocaleString('zh-TW')}"`;
+    const note = (r.note || '').replace(/"/g, '""');
+    return `"${r.name}","${LANGS[r.lang].name}","${note}","${d.toLocaleString('zh-TW')}"`;
   }).join('\n');
   const blob = new Blob(['\uFEFF' + header + rows], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a');
@@ -938,6 +1016,8 @@ function clearAll() {
 // ══════════════════════════════════
 function resetQuiz() {
   document.getElementById('input-name').value = '';
+  document.getElementById('open-answer').value = '';
+  openAnswer = '';
   showScreen('screen-start');
 }
 
