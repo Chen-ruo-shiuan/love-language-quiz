@@ -580,6 +580,7 @@
 
       <div class="admin-controls">
         <input type="text" id="admin-search" placeholder="搜尋姓名…" oninput="renderTable()" />
+        <button class="btn outline" style="padding:9px 14px;font-size:.85rem;" onclick="renderTable()" title="重新整理">↺</button>
         <button class="btn outline" style="padding:9px 16px;font-size:.82rem" onclick="exportCSV()">匯出 CSV</button>
         <button class="btn outline" style="padding:9px 16px;font-size:.82rem;border-color:#E0DEDB;color:#AEAAA6" onclick="clearAll()">清空</button>
       </div>
@@ -950,34 +951,64 @@ function checkPassword() {
 }
 
 function openAdmin() {
-  renderTable();
   showScreen('screen-admin');
+  renderTable();
 }
 
-function renderTable() {
-  const records = loadRecords();
-  const search  = (document.getElementById('admin-search')?.value || '').trim().toLowerCase();
+// 從 langLabel 字串反查 lang code（W/T/G/S/P）
+function getLangCode(label) {
+  return Object.entries(LANGS).find(([, v]) => label.includes(v.name))?.[0] || null;
+}
+
+async function renderTable() {
+  const wrap = document.getElementById('admin-table-wrap');
+  wrap.innerHTML = '<div class="empty-msg">載入中⋯</div>';
+
+  let records = [];
+
+  // 優先從 Google Sheets 拉
+  if (SHEETS_URL) {
+    try {
+      const res = await fetch(`${SHEETS_URL}?action=getAll`, { mode: 'cors' });
+      const json = await res.json();
+      records = json.records || [];
+    } catch(e) {
+      console.warn('從 Sheets 載入失敗，改用本地備份', e);
+      records = loadRecords().map(r => ({
+        date: r.date, name: r.name,
+        langLabel: LANGS[r.lang].emoji + ' ' + LANGS[r.lang].name,
+        note: r.note || ''
+      }));
+    }
+  } else {
+    records = loadRecords().map(r => ({
+      date: r.date, name: r.name,
+      langLabel: LANGS[r.lang].emoji + ' ' + LANGS[r.lang].name,
+      note: r.note || ''
+    }));
+  }
+
+  const search = (document.getElementById('admin-search')?.value || '').trim().toLowerCase();
   const filtered = search ? records.filter(r => r.name.toLowerCase().includes(search)) : records;
 
   document.getElementById('admin-count').textContent = `${records.length} 筆`;
 
-  const wrap = document.getElementById('admin-table-wrap');
   if (!filtered.length) {
-    wrap.innerHTML = '<div class="empty-msg">目前還沒有測驗紀錄<br>快讓客人來測試吧 🌸</div>';
+    wrap.innerHTML = '<div class="empty-msg">目前還沒有測驗紀錄</div>';
     return;
   }
 
   const rows = [...filtered].reverse().map((r, i) => {
-    const d = new Date(r.date);
-    const dateStr = `${d.getMonth()+1}/${d.getDate()} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
-    const lang = LANGS[r.lang];
+    const langCode = getLangCode(r.langLabel);
+    const tagClass = langCode ? `tag-${langCode}` : '';
     const noteHtml = r.note
-      ? `<div style="font-size:.78rem;color:var(--gray-md);margin-top:4px;line-height:1.6;white-space:pre-wrap;">${esc(r.note)}</div>`
+      ? `<div style="font-size:.78rem;color:var(--gray-md);margin-top:4px;line-height:1.7;white-space:pre-wrap;">${esc(r.note)}</div>`
       : `<div style="font-size:.78rem;color:var(--gray-lt);margin-top:4px;">（未填寫）</div>`;
     return `<tr>
       <td style="vertical-align:top">${filtered.length - i}</td>
-      <td style="vertical-align:top"><b>${esc(r.name)}</b><br><span style="font-size:.75rem;color:var(--gray-lt)">${dateStr}</span></td>
-      <td style="vertical-align:top"><span class="lang-tag tag-${r.lang}">${lang.emoji} ${lang.name}</span></td>
+      <td style="vertical-align:top"><b>${esc(r.name)}</b><br>
+        <span style="font-size:.75rem;color:var(--gray-lt)">${esc(String(r.date))}</span></td>
+      <td style="vertical-align:top"><span class="lang-tag ${tagClass}">${esc(r.langLabel)}</span></td>
       <td style="vertical-align:top">${noteHtml}</td>
     </tr>`;
   }).join('');
